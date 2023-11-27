@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript">
+        var I = ["1", "i", "I", "一", "١", "१", "௧", "੧"];
+        var II = ["2", "ii", "II", "二", "٢", "२", "௨", "੨"];
+        var III = ["3", "iii", "III", "三", "٣", "३", "௩", "੩"];
+        var IV = ["4", "iv", "IV", "四", "٤", "४", "௪", "੪"]
+        var V = ["5", "v", "V", "五", "٥", "५", "௫", "੫"];
+        var a = ["a", "A", "α", "α".toUpperCase(), "ㄱ", "Ⴀ", "א", "А"];
+        var b = ["b", "B", "β", "β".toUpperCase(), "ㄲ", "Ⴁ", "ב", "Б"];
+        var c = ["c", "C", "γ", "γ".toUpperCase(), "ㄴ", "Ⴂ", "ג", "В"];
+        var d = ["d", "D", "δ", "δ".toUpperCase(), "ㄷ", "Ⴃ", "ד", "Г"];
+        var e = ["e", "E", "ε", "ε".toUpperCase(), "ㄸ", "Ⴄ", "ה", "Ґ"];
+        var first = [0, I, II, III, IV, V];
+        var second = [0, a, b, c, d, e];
+        var divider = [['|',''],['/',''],['\\',''],[':',''],['.',''],[';',''],['-',''],['+',''],['-',''],['~',''],['(',')'],['[',']'],['{','}'],['<','>']];
+        var months = ["Chs", "Dsc", "Cfn", "Bcy", "Afm"];
+        function rand_elem(array, used) {
+            var index = Math.floor(Math.random()*array.length);
+            while(used.includes(index)) {
+                index = Math.floor(Math.random()*array.length);
+            }
+            used.push(index);
+            return array[index];
+        }
+
+        function rand_divider(p, used) {
+            var [d1,d2] = rand_elem(divider, used);
+            return d1+p+d2;
+        }
+
+        function rand_single_divider(used) {
+            var index = Math.floor(Math.random()*10);
+            while(used.includes(index)) {
+                index = Math.floor(Math.random()*10);
+            }
+            used.push(index);
+            return divider[index][0];
+        }
+
+        function dateIntoDiscordian(date){
+            var doy = (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;
+            var dmonth = Math.floor(doy / 73);
+            var dday = doy % 73;
+            var dyear = date.getFullYear()+3136-1970;
+            return ""+dday+months[dmonth]+dyear;
+        }
+
+        function generate_weird() {
+            var [cs, cf] = document.querySelector('input[name="creator"]:checked').value.split('.');
+            var [rs, rf] = document.querySelector('input[name="recipient"]:checked').value.split('.');
+            var date = document.getElementById("date").valueAsDate;
+            var used = [];
+            var p1 = rand_elem(first[cf], used);
+            var p2 = rand_elem(second[cs], used);
+            var p3 = rand_elem(first[rf], used);
+            var p4 = rand_elem(second[rs], used);
+
+            used = [];
+            var odd = p1+rand_divider(p2, used)+rand_single_divider(used)+p3+rand_divider(p4, used)+rand_single_divider(used)+dateIntoDiscordian(date);
+
+            document.getElementById("odd").textContent = "ODD#: " + odd;
+
+            return odd;
+        }
+
+        function generate() {
+            var [cs, cf] = document.querySelector('input[name="creator"]:checked').value.split('.');
+            var [rs, rf] = document.querySelector('input[name="recipient"]:checked').value.split('.');
+            var date = document.getElementById("date").valueAsDate;
+            var p1 = first[cf][2];
+            var p2 = second[cs][0];
+            var p3 = first[rf][1];
+            var p4 = second[rs][1];
+
+            var odd = p1+"("+p2+")/"+p3+","+p4+";"+dateIntoDiscordian(date);
+
+            document.getElementById("odd").textContent = "ODD# " + odd;
+
+            return odd;
+        }
+
+        function copy() {
+            var odd = document.getElementById("odd").textContent;
+            navigator.clipboard.writeText(odd);
+        }
+    </script>
+    <style type="text/css">
+        :root {
+            --gb-dm-bg0: #282828;
+            --gb-dm-bg0-hard: #1d2021;
+            --gb-dm-bg0-soft: #32302f;
+            --gb-dm-bg1: #3c3836;
+            --gb-dm-bg2: #504945;
+            --gb-dm-bg3: #665c54;
+            --gb-dm-bg4: #7c6f64;
+
+            --gb-dm-fg0: #fbf1c7;
+            --gb-dm-fg1: #ebdbb2;
+            --gb-dm-fg2: #d5c4a1;
+            --gb-dm-fg3: #bdae93;
+            --gb-dm-fg4: #a89984;
+
+            --gb-dm-dark-red: #cc241d;
+            --gb-dm-dark-green: #98971a;
+            --gb-dm-dark-yellow: #d79921;
+            --gb-dm-dark-blue: #458588;
+            --gb-dm-dark-purple: #b16286;
+            --gb-dm-dark-aqua: #689d6a;
+            --gb-dm-dark-orange: #d65d0e;
+            --gb-dm-dark-gray: #928374;
+
+            --gb-dm-light-red: #fb4934;
+            --gb-dm-light-green: #b8bb26;
+            --gb-dm-light-yellow: #fabd2f;
+            --gb-dm-light-blue: #83a598;
+            --gb-dm-light-purple: #d3869b;
+            --gb-dm-light-aqua: #8ec07c;
+            --gb-dm-light-orange: #f38019;
+            --gb-dm-light-gray: #a89984;
+        }
+
+        body {
+            background: var(--gb-dm-bg0);
+            color: var(--gb-dm-fg1);
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        h1#odd {
+            background: var(--gb-dm-bg2);
+            padding: 1px;
+            border-width: 2px;
+            border-style: solid;
+            border-color: var(--gb-dm-fg1);
+        }
+
+        h2 {
+            font-size: 1em;
+            display: inline-block;
+            margin: 1em 1em 0.5em 1em;
+        }
+
+        p {
+            font-size: 1em;
+            font-style: italic;
+            display: inline-block;
+            margin: 1em 1em 0.5em 1em;
+            color: var(--gb-dm-fg2);
+        }
+
+        button {
+            font-size: 2em;
+            display: inline-block;
+            background: var(--gb-dm-bg4);
+            border-color: var(--gb-dm-fg1);
+        }
+
+        button:hover {
+            background: var(--gb-dm-dark-orange);
+        }
+
+        input {
+            padding: 1em;
+        }
+
+        label {
+            font-size: 1em;
+            padding: 1em;
+        }
+
+        div.selector>div {
+            display: flex;
+        }
+
+        div.selector>div> :nth-child(1) {
+            background: var(--gb-dm-bg1);
+        }
+
+        div.selector>div> :nth-child(2) {
+            background: var(--gb-dm-bg1);
+        }
+
+        div.selector>div> :nth-child(3) {
+            background: var(--gb-dm-bg2);
+        }
+
+        div.selector>div> :nth-child(4) {
+            background: var(--gb-dm-bg2);
+        }
+
+        div.selector>div> :nth-child(5) {
+            background: var(--gb-dm-bg3);
+        }
+
+        div.selector>div> :nth-child(6) {
+            background: var(--gb-dm-bg3);
+        }
+
+        div.selector>div> :nth-child(7) {
+            background: var(--gb-dm-bg2);
+        }
+
+        div.selector>div> :nth-child(8) {
+            background: var(--gb-dm-bg2);
+        }
+
+        div.selector>div> :nth-child(9) {
+            background: var(--gb-dm-bg1);
+        }
+
+        div.selector>div> :nth-child(10) {
+            background: var(--gb-dm-bg1);
+        }
+
+        input[type="radio"]:checked+label {
+            background: var(--gb-dm-dark-orange);
+        }
+
+        input[type="date"] {
+            background: var(--gb-dm-bg2);
+            color: var(--gb-dm-fg1);
+            border-color: var(--gb-dm-fg1);
+            margin-left: 1em;
+        }
+
+        div.result {
+            display: flex;
+            align-items: center;
+            justify-content:center;
+            width:100%;
+            gap: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Creator: </h1>
+    <div class="selector" id="creator">
+        <h2>V) THE HOUSE OF APOSTLES OF ERIS</h2>
+        <p>For the Eristocracy and the Cabalablia</p>
+        <div>
+            <input type="radio" name="creator" id="c11" value="1.5" /><label for="c11">A. The Five Apostles of ERIS</label>
+            <input type="radio" name="creator" id="c21" value="2.5" /><label for="c21">B. The Golden Apple Corps (KSC)</label>
+            <input type="radio" name="creator" id="c31" value="3.5" /><label for="c31">C. Episkoposes of The Discordian Society</label>
+            <input type="radio" name="creator" id="c41" value="4.5" /><label for="c41">D. POEE Cabal Priests</label>
+            <input type="radio" name="creator" id="c51" value="5.5" /><label for="c51">E. Saints, Erisian Avatars, and Like Personages</label>
+        </div>
+        <h2>IV) THE HOUSE OF THE RISING PODGE</h2>
+        <p>For the Disciples of Discordia</p>
+        <div>
+            <input type="radio" name="creator" id="c12" value="1.3" /><label for="c12">A. Office of My High Reverence, The Polyfather</label>
+            <input type="radio" name="creator" id="c22" value="2.3" /><label for="c22">B. Council of POEE Priests</label>
+            <input type="radio" name="creator" id="c32" value="3.3" /><label for="c32">C. The LEGION OF DYNAMIC DISCORD</label>
+            <input type="radio" name="creator" id="c42" value="4.3" /><label for="c42">D. Eristic Avatars</label>
+            <input type="radio" name="creator" id="c52" value="5.3" /><label for="c52">E. Aneristic Avatars</label>
+        </div>
+        <h2>III) THE HOUSE OF THE RISING HODGE</h2>
+        <p>For the Bureaucracy</p>
+        <div>
+            <input type="radio" name="creator" id="c13" value="1.3" /><label for="c13">A. The Bureau of Erisian ARchives</label>
+            <input type="radio" name="creator" id="c23" value="2.3" /><label for="c23">B. The Bureau of The POEE Epistolary, and The Division of Dogmas</label>
+            <input type="radio" name="creator" id="c33" value="3.3" /><label for="c33">C. The Bureau of Symbols, Emplems, Certificates and Such</label>
+            <input type="radio" name="creator" id="c43" value="4.3" /><label for="c43">D. The Bureau of Eristic Affairs, and The Administry for The Unenlightened Eristic Horde</label>
+            <input type="radio" name="creator" id="c53" value="5.3" /><label for="c53">E. The Bureau of Aneristic Affairs, and the Administry ofr the Orders of Discordia</label>
+        </div>
+        <h2>II) THE HOUSE OF THE RISING COLLAPSE</h2>
+        <p>For the Encouragement of Liberation of Freedom, and/or the Discouragement of the Immanetizing of the Eschaton</p>
+        <div>
+            <input type="radio" name="creator" id="c14" value="1.2" /><label for="c14">A. The Breeze of Wisdom and/or The Wind of Insanity</label>
+            <input type="radio" name="creator" id="c24" value="2.2" /><label for="c24">B. The Breeze of Integrity and/or The Wind of Arrogance</label>
+            <input type="radio" name="creator" id="c34" value="3.2" /><label for="c34">C. The Breeze of Beauty and/or The Wind of Outrages</label>
+            <input type="radio" name="creator" id="c44" value="4.2" /><label for="c44">D. The Breeze of Love and/or The Wind of Bombast</label>
+            <input type="radio" name="creator" id="c54" value="5.2" /><label for="c54">E. The Breeze of Laughter and/or The Wind of Bullshit</label>
+        </div>
+        <h2>I) THE OUT HOUSE</h2>
+        <p>For what is left over</p>
+        <div>
+            <input type="radio" name="creator" id="c15" value="1.1" /><label for="c15">A. Miscellaneous Avatars</label>
+            <input type="radio" name="creator" id="c25" value="2.1" /><label for="c25">B. The Fifth Column</label>
+            <input type="radio" name="creator" id="c35" value="3.1" /><label for="c35">C. POEE =POPES= everywhere</label>
+            <input type="radio" name="creator" id="c45" value="4.1" /><label for="c45">D. Drawer "O" for OUT OF FILE</label>
+            <input type="radio" name="creator" id="c55" value="5.1" /><label for="c55">E. Lost Documents and Forgotten Truths</label>
+        </div>
+    </div>
+    <h1>Recipient: </h1>
+    <div class="selector" id="recipient">
+        <h2>V) THE HOUSE OF APOSTLES OF ERIS</h2>
+        <p>For the Eristocracy and the Cabalablia</p>
+        <div>
+            <input type="radio" name="recipient" id="r11" value="1.5" /><label for="r11">A. The Five Apostles of ERIS</label>
+            <input type="radio" name="recipient" id="r21" value="2.5" /><label for="r21">B. The Golden Apple Corps (KSC)</label>
+            <input type="radio" name="recipient" id="r31" value="3.5" /><label for="r31">C. Episkoposes of The Discordian Society</label>
+            <input type="radio" name="recipient" id="r41" value="4.5" /><label for="r41">D. POEE Cabal Priests</label>
+            <input type="radio" name="recipient" id="r51" value="5.5" /><label for="r51">E. Saints, Erisian Avatars, and Like Personages</label>
+        </div>
+        <h2>IV) THE HOUSE OF THE RISING PODGE</h2>
+        <p>For the Disciples of Discordia</p>
+        <div>
+            <input type="radio" name="recipient" id="r12" value="1.4" /><label for="r12">A. Office of My High Reverence, The Polyfather</label>
+            <input type="radio" name="recipient" id="r22" value="2.4" /><label for="r22">B. Council of POEE Priests</label>
+            <input type="radio" name="recipient" id="r32" value="3.4" /><label for="r32">C. The LEGION OF DYNAMIC DISCORD</label>
+            <input type="radio" name="recipient" id="r42" value="4.4" /><label for="r42">D. Eristic Avatars</label>
+            <input type="radio" name="recipient" id="r52" value="5.4" /><label for="r52">E. Aneristic Avatars</label>
+        </div>
+        <h2>III) THE HOUSE OF THE RISING HODGE</h2>
+        <p>For the Bureaucracy</p>
+        <div>
+            <input type="radio" name="recipient" id="r13" value="1.3" /><label for="r13">A. The Bureau of Erisian ARchives</label>
+            <input type="radio" name="recipient" id="r23" value="2.3" /><label for="r23">B. The Bureau of The POEE Epistolary, and The Division of Dogmas</label>
+            <input type="radio" name="recipient" id="r33" value="3.3" /><label for="r33">C. The Bureau of Symbols, Emplems, Certificates and Such</label>
+            <input type="radio" name="recipient" id="r43" value="4.3" /><label for="r43">D. The Bureau of Eristic Affairs, and The Administry for The Unenlightened Eristic Horde</label>
+            <input type="radio" name="recipient" id="r53" value="5.3" /><label for="r53">E. The Bureau of Aneristic Affairs, and the Administry ofr the Orders of Discordia</label>
+        </div>
+        <h2>II) THE HOUSE OF THE RISING COLLAPSE</h2>
+        <p>For the Encouragement of Liberation of Freedom, and/or the Discouragement of the Immanetizing of the Eschaton</p>
+        <div>
+            <input type="radio" name="recipient" id="r14" value="1.2" /><label for="r14">A. The Breeze of Wisdom and/or The Wind of Insanity</label>
+            <input type="radio" name="recipient" id="r24" value="2.2" /><label for="r24">B. The Breeze of Integrity and/or The Wind of Arrogance</label>
+            <input type="radio" name="recipient" id="r34" value="3.2" /><label for="r34">C. The Breeze of Beauty and/or The Wind of Outrages</label>
+            <input type="radio" name="recipient" id="r44" value="4.2" /><label for="r44">D. The Breeze of Love and/or The Wind of Bombast</label>
+            <input type="radio" name="recipient" id="r54" value="5.2" /><label for="r54">E. The Breeze of Laughter and/or The Wind of Bullshit</label>
+        </div>
+        <h2>I) THE OUT HOUSE</h2>
+        <p>For what is left over</p>
+        <div>
+            <input type="radio" name="recipient" id="r15" value="1.1" /><label for="r15">A. Miscellaneous Avatars</label>
+            <input type="radio" name="recipient" id="r25" value="2.1" /><label for="r25">B. The Fifth Column</label>
+            <input type="radio" name="recipient" id="r35" value="3.1" /><label for="r35">C. POEE =POPES= everywhere</label>
+            <input type="radio" name="recipient" id="r45" value="4.1" /><label for="r45">D. Drawer "O" for OUT OF FILE</label>
+            <input type="radio" name="recipient" id="r55" value="5.1" /><label for="r55">E. Lost Documents and Forgotten Truths</label>
+        </div>
+    </div>
+    <h1>Creation Date: </h1>
+    <div>
+        <input type="date" id="date"></input>
+    </div>
+    <div class="result">
+        <h1 id="odd" style="display: inline-block">ODD#: </h1>
+        <button onclick="generate()">Generate</button>
+        <button onclick="generate_weird()">Generate (Updated Version)</button>
+        <button onclick="copy()">Copy</button>
+    </div>
+</body>
+
+</html>
